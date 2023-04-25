@@ -2,7 +2,6 @@
 """
 donut arc-enciel :
 """
-
 import moviepy.video.io.ImageSequenceClip
 import numpy as np
 from PIL import Image
@@ -23,9 +22,10 @@ Lz = -1
 
 alphabet = 'abcdefghijklmnopqrstuvwxyz'
 
-rouge = 14
-vert = 248
-bleu = 244
+
+# rouge = 14
+# vert = 248
+# bleu = 244
 
 
 def rouge(x):
@@ -102,8 +102,8 @@ c_xa, s_xa = np.cos(alpha), np.sin(alpha)
 matrice_image = np.empty((hauteur, largeur, 3), dtype=np.uint8)
 matrice_image_bis = np.empty((hauteur, largeur), dtype=float)
 
-Z_R_center = 0
 step = 0
+Z_R_center = 0
 for i, (c_x, s_x, c_y, s_y, c_z, s_z) in enumerate(zip(c_xs, s_xs, c_ys, s_ys, c_zs, s_zs)):
     matrice_image[:] = 0
     matrice_image_bis[:] = -np.inf
@@ -138,7 +138,7 @@ for i, (c_x, s_x, c_y, s_y, c_z, s_z) in enumerate(zip(c_xs, s_xs, c_ys, s_ys, c
     xs_norm = xs - x_R_center[:, None]
 
     produit_scalaire = ((Lx * xs_norm + Ly * ys_norm + Lz * zs_norm) / (
-                np.sqrt(zs_norm ** 2 + ys_norm ** 2 + xs_norm ** 2) * np.sqrt(Lx ** 2 + Ly ** 2 + Lz ** 2))).flatten()
+            np.sqrt(zs_norm ** 2 + ys_norm ** 2 + xs_norm ** 2) * np.sqrt(Lx ** 2 + Ly ** 2 + Lz ** 2))).flatten()
 
     coord_y = (hauteur // 2 - ys.astype(int)).flatten()
     coord_x = (largeur // 2 + xs.astype(int)).flatten()
@@ -163,32 +163,10 @@ for i, (c_x, s_x, c_y, s_y, c_z, s_z) in enumerate(zip(c_xs, s_xs, c_ys, s_ys, c
     im = Image.fromarray(matrice_image, 'RGB')
     im = im.convert('RGB')
     im.save(
-        (
-            (
-                (
-                    (
-                        (
-                            (
-                                f"D:/Léo/Informatique/simulation/image/donut{name}"
-                                + alphabet[
-                                    ((((step // 26) // 26) // 26) // 26)
-                                ]
-                                + alphabet[(((step // 26) // 26) // 26) // 26]
-                            )
-                            + alphabet[((step // 26) // 26) // 26]
-                        )
-                        + alphabet[(step // 26) // 26]
-                    )
-                    + alphabet[step // 26]
-                )
-                + alphabet[step % 26]
-            )
-            + ".png"
-        )
+        f"D:/Léo/Informatique/simulation/image/donut{name}{alphabet[step // 26 // 26 // 26 // 26]}{alphabet[step // 26 // 26 // 26 // 26]}{alphabet[step // 26 // 26 // 26]}{alphabet[step // 26 // 26]}{alphabet[step // 26]}{alphabet[step % 26]}.png"
     )
 
-
-image_folder = 'D:/Léo/Informatique/simulation/image'
+image_folder = 'D:\Leo/Informatique/Python/SimulatingThings/Donut/image'
 fps = 30
 
 image_files = [
@@ -199,7 +177,7 @@ image_files = [
 
 print(image_files)
 clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(image_files, fps=fps)
-clip.write_videofile('D:/Léo/Informatique/simulation/video/my_couleur.mp4')
+clip.write_videofile('D:\Leo/Informatique/Python/SimulatingThings/Donut/video/my_couleur.mp4')
 
 """for image in image_files:
     os.remove(image)"""

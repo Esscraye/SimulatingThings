@@ -7,7 +7,6 @@ import os
 from tqdm import tqdm
 from Snippets.snippet import Snippet
 
-
 class Donut:
     def __init__(self, film):
         self.hauteur = 2160
@@ -16,8 +15,8 @@ class Donut:
         self.rayon = 200
         self.Lx, self.Ly, self.Lz = -1, 0, -3  # vecteur lumière
         self.alphabet = 'abcdefghijklmnopqrstuvwxyz'
-        self.image_folder = 'C:/Leo/Informatique/Projets/Donut/image'
-        self.video_folder = "C:/Leo/Informatique/Projets/Donut/video/"
+        self.image_folder = 'D:/Leo/Informatique/Python/SimulatingThings/Donut/image'
+        self.video_folder = "D:/Leo/Informatique/Python/SimulatingThings/Donut/video/"
         self.fps = 60
         self.frame = 'donut'  # nom racine des images
         self.film = film  # nom de la video
@@ -77,7 +76,7 @@ class Donut:
             zs = zs.flatten()
             try:
                 mask, = np.where(matrice_image_bis[coord_y, coord_x] < zs)
-            except:
+            except Exception:
                 mask, = np.where(matrice_image_bis[coord_y, coord_x] < zs)
 
             # print(len(mask))
@@ -96,12 +95,8 @@ class Donut:
             im = Image.fromarray(matrice_image, 'RGB')
             im = im.convert('RGB')
             im.save(
-                ((((((f'{self.image_folder}/{name}' + self.alphabet[((((step // 26) // 26) // 26) // 26)]
-                      + self.alphabet[(((step // 26) // 26) // 26) // 26])
-                     + self.alphabet[((step // 26) // 26) // 26])
-                    + self.alphabet[(step // 26) // 26])
-                   + self.alphabet[step // 26])
-                  + self.alphabet[step % 26]) + ".png"))
+                f'{self.image_folder}/{name}{self.alphabet[step // 26 // 26 // 26 // 26]}{self.alphabet[step // 26 // 26 // 26 // 26]}{self.alphabet[step // 26 // 26 // 26]}{self.alphabet[step // 26 // 26]}{self.alphabet[step // 26]}{self.alphabet[step % 26]}.png'
+            )
 
             # print(str(time.time() - start) + "secondes pour la création de l'image.")
             bar.update(1)
@@ -130,23 +125,22 @@ class Donut:
 if __name__ == '__main__':
     donut = Donut('Video_donut_4k')
     debut = time.time()
-    donut.processing(9, 9)
-    donut.processing(1, 9)
-    donut.processing(3, 9)
+    console = 0  # 1 à 3 pour les images, autre chose pour la vidéo
+    if console == 1:
+        donut.processing(9, 9)
+        donut.processing(1, 9)
+        donut.processing(3, 9)
+    elif console == 2:
+        donut.processing(2, 9)
+        donut.processing(4, 9)
+        donut.processing(6, 9)
+    elif console == 3:
+        donut.processing(5, 9)
+        donut.processing(7, 9)
+        donut.processing(8, 9)
+    else:
+        donut.video()
+        donut.deletion()
     print(f'{str(time.time() - debut)}secondes')
-    """
-    donut.processing(1, 9)
-    donut.processing(4, 9)
-    donut.processing(3, 9)
-    print(str(time.time() - debut) + "secondes")
-    """
-    """
-    donut.processing(1, 9)
-    donut.processing(4, 9)
-    donut.processing(3, 9)
-    print(str(time.time() - debut) + "secondes")
-    """
-    donut.video()
-    # donut.deletion()
     print("finit")
     sys.exit()
