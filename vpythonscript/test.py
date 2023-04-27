@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-
 def julia_quadratic(zx, zy, cx, cy, threshold):
     """Calculates whether the number z[0] = zx + i*zy with a constant c = x + i*y
     belongs to the Julia set. In order to belong, the sequence
@@ -42,7 +41,7 @@ frames = 100  # number of frames in the animation
 r = 0.7885
 a = np.linspace(0, 2 * np.pi, frames)
 
-fig = plt.figure(figsize=(10, 10))  # instantiate a figure to draw
+fig = plt.figure(figsize=(100, 100))  # instantiate a figure to draw
 ax = plt.axes()  # create an axes object
 
 
@@ -64,4 +63,4 @@ def animate(i):
 
 
 anim = animation.FuncAnimation(fig, animate, frames=frames, interval=50, blit=True)
-anim.save('julia_set.gif', writer='pillow', fps=60)
+anim.save('julia_set.gif', dpi=300, writer=animation.PillowWriter(fps=20))
