@@ -43,13 +43,18 @@ class Donut:
         matrice_image_bis = np.empty((self.hauteur, self.largeur), dtype=float)
 
         bar = tqdm(total=int(((2 * np.pi) / self.pas) / 9), desc='Progress')
-        for step, (c_x, s_x, c_y, s_y, c_z, s_z) in enumerate(zip(c_xs, s_xs, c_ys, s_ys, c_zs, s_zs), start=1):
+
+        Z_R_center, Y_R_center, X_R_center = 0, self.Rayon * s_xt, self.Rayon * c_xt
+        Zs = self.rayon * s_xa
+        Ys = (self.Rayon + self.rayon * c_xa[None, :]) * s_xt[:, None]
+        Xs = (self.Rayon + self.rayon * c_xa[None, :]) * c_xt[:, None]
+
+        for step, (c_x, s_x, c_y, s_y, c_z, s_z) in enumerate(zip(c_xs, s_xs, c_ys, s_ys, c_zs, s_zs)):
             # start = time.time()
             matrice_image[:] = 0
             matrice_image_bis[:] = -np.inf
 
             # grand cercle
-            Z_R_center, Y_R_center, X_R_center = 0, self.Rayon * s_xt, self.Rayon * c_xt
             ZZ_R_center = Y_R_center * s_x + Z_R_center * c_x
             YY_R_center = Y_R_center * c_x - Z_R_center * s_x
             ZZZ_R_center = ZZ_R_center * c_y - X_R_center * s_y
@@ -58,9 +63,6 @@ class Donut:
             x_R_center = XXX_R_center * c_z - YY_R_center * s_z
 
             # petit cercle
-            Zs = self.rayon * s_xa
-            Ys = (self.Rayon + self.rayon * c_xa[None, :]) * s_xt[:, None]
-            Xs = (self.Rayon + self.rayon * c_xa[None, :]) * c_xt[:, None]
             ZZs, YYs = Ys * s_x + Zs * c_x, Ys * c_x - Zs * s_x
             ZZZs, YYYs, XXXs = ZZs * c_y - Xs * s_y, YYs, ZZs * s_y + Xs * c_y
             zs, ys, xs = ZZZs, XXXs * s_z + YYYs * c_z, XXXs * c_z - YYYs * s_z
@@ -77,9 +79,8 @@ class Donut:
             try:
                 mask, = np.where(matrice_image_bis[coord_y, coord_x] < zs)
             except Exception:
-                mask, = np.where(matrice_image_bis[coord_y, coord_x] < zs)
+                return Exception
 
-            # print(len(mask))
             coef += self.var_color
             rouge, vert, bleu = Snippet.couleur(True, coef)
             while len(mask):
@@ -90,7 +91,7 @@ class Donut:
                 matrice_image[coo_y, coo_x, 2] = np.where(p_s < 0, bleu * np.abs(p_s), 0)
                 matrice_image_bis[coo_y, coo_x] = zs[mask]
                 mask, = np.where(matrice_image_bis[coord_y, coord_x] < zs)
-                # print(len(mask))
+
 
             im = Image.fromarray(matrice_image, 'RGB')
             im = im.convert('RGB')
@@ -98,7 +99,7 @@ class Donut:
                 f'{self.image_folder}/{name}{self.alphabet[step // 26 // 26 // 26 // 26]}{self.alphabet[step // 26 // 26 // 26 // 26]}{self.alphabet[step // 26 // 26 // 26]}{self.alphabet[step // 26 // 26]}{self.alphabet[step // 26]}{self.alphabet[step % 26]}.png'
             )
 
-            # print(str(time.time() - start) + "secondes pour la création de l'image.")
+            # print(f"{str(time.time() - start)} secondes pour la création de l'image.")
             bar.update(1)
 
     def video(self):
@@ -125,7 +126,7 @@ class Donut:
 if __name__ == '__main__':
     donut = Donut('Video_donut_4k')
     debut = time.time()
-    console = 0  # 1 à 3 pour les images, autre chose pour la vidéo
+    console = 1  # 1 à 3 pour les images, autre chose pour la vidéo
     if console == 1:
         donut.processing(9, 9)
         donut.processing(1, 9)
