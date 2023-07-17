@@ -10,17 +10,17 @@ from multiprocessing import Pool
 
 class Donut:
     def __init__(self, film):
-        self.pixel = 2160
+        self.pixel = 740
         self.ratio = 16/9
 
         self.hauteur = self.pixel
         self.largeur = int(self.pixel * self.ratio)
         self.Rayon = self.pixel / 5
         self.rayon = self.Rayon / 2.5
-        self.pas_theta = 1.3 * np.arctan(np.sqrt(2) / (2 * (self.Rayon + self.rayon)))
-        self.pas_alpha = 1.4 * np.arctan(1 / (2 * self.rayon))
+        self.pas_theta = np.arctan(np.sqrt(2) / (2 * (self.Rayon + self.rayon)))
+        self.pas_alpha = 1.5 * np.arctan(1 / (2 * self.rayon))
 
-        self.Lx, self.Ly, self.Lz =-1, 0, -6  # vecteur lumière
+        self.Lx, self.Ly, self.Lz = -1, 0, -6  # vecteur lumière
         self.alphabet = 'abcdefghijklmnopqrstuvwxyz'
         self.image_folder = 'D:/Leo/Informatique/Python/SimulatingThings/Donut/image'
         self.video_folder = "D:/Leo/Informatique/Python/SimulatingThings/Donut/video/"
@@ -146,10 +146,8 @@ if __name__ == '__main__':
         donut.processing(7, 9)
         donut.processing(8, 9)
     elif console == 4:
-        with Pool(processes=3) as pool:
-            pool.starmap(donut.processing, [(9, 9), (1, 9), (3, 9)]
-                         + [(2, 9), (4, 9), (6, 9)]
-                         + [(5, 9), (7, 9), (8, 9)])
+        with Pool(processes=4) as pool:
+            pool.starmap(donut.processing, [(1, 9), (2, 9), (3, 9), (4, 9), (5, 9), (6, 9), (7, 9), (8, 9), (9, 9)])
     else:
         donut.video()
         donut.deletion()
