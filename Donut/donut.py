@@ -5,8 +5,28 @@ import numpy as np
 from PIL import Image
 import os
 from tqdm import tqdm
-from Snippets.snippet import Snippet
 from multiprocessing import Pool
+
+class Snippet:
+    @staticmethod
+    def couleur(degrade, coefficient=0):
+        if not degrade:
+            return 14, 248, 244
+        coefficient = coefficient % 1530
+
+        if coefficient < 255:
+            rouge, vert, bleu = 255, 127.5 + coefficient / 2, 0
+        elif coefficient < 510:
+            rouge, vert, bleu = 510 - coefficient, 255, 0
+        elif coefficient < 765:
+            rouge, vert, bleu = 0, 255, coefficient - 510
+        elif coefficient < 1020:
+            rouge, vert, bleu = 0, 1020 - coefficient + (coefficient % 765) / 2, 255
+        elif coefficient <= 1275:
+            rouge, vert, bleu = coefficient - 1020, 127.5, 255
+        else:
+            rouge, vert, bleu = 255, 127.5, 1530 - coefficient
+        return rouge, vert, bleu
 
 class Donut:
     def __init__(self, film):
@@ -24,10 +44,10 @@ class Donut:
         self.alphabet = 'abcdefghijklmnopqrstuvwxyz'
         self.image_folder = 'D:/Leo/Informatique/Python/SimulatingThings/Donut/image'
         self.video_folder = "D:/Leo/Informatique/Python/SimulatingThings/Donut/video/"
-        self.fps = 60
+        self.fps = 30
         self.frame = 'donut'  # nom racine des images
         self.film = film  # nom de la video
-        self.pas = np.pi / 80
+        self.pas = np.pi / 200
         self.var_color = 1530 / (2 * np.pi / self.pas)  # coef de variation de couleur
 
     def donut(self, start, stop, coef, name='donut'):
@@ -56,7 +76,6 @@ class Donut:
         Xs = (self.Rayon + self.rayon * c_xa[None, :]) * c_xt[:, None]
 
         for step, (c_x, s_x, c_y, s_y, c_z, s_z) in enumerate(zip(c_xs, s_xs, c_ys, s_ys, c_zs, s_zs)):
-            # start = time.time()
             matrice_image[:] = 0
             matrice_image_bis[:] = -np.inf
 
@@ -104,8 +123,6 @@ class Donut:
             im.save(
                 f'{self.image_folder}/{name}{self.alphabet[step // 26 // 26 // 26 // 26]}{self.alphabet[step // 26 // 26 // 26 // 26]}{self.alphabet[step // 26 // 26 // 26]}{self.alphabet[step // 26 // 26]}{self.alphabet[step // 26]}{self.alphabet[step % 26]}.png'
             )
-
-            # print(f"{str(time.time() - start)} secondes pour la création de l'image.")
             bar.update(1)
 
     def video(self):
@@ -132,25 +149,9 @@ class Donut:
 if __name__ == '__main__':
     donut = Donut('Video_donut_4k')
     debut = time.time()
-    console = 4  # 1 à 3 pour les images, autre chose pour la vidéo
-    if console == 1:
-        donut.processing(9, 9)
-        donut.processing(1, 9)
-        donut.processing(3, 9)
-    elif console == 2:
-        donut.processing(2, 9)
-        donut.processing(4, 9)
-        donut.processing(6, 9)
-    elif console == 3:
-        donut.processing(5, 9)
-        donut.processing(7, 9)
-        donut.processing(8, 9)
-    elif console == 4:
-        with Pool(processes=4) as pool:
-            pool.starmap(donut.processing, [(1, 9), (2, 9), (3, 9), (4, 9), (5, 9), (6, 9), (7, 9), (8, 9), (9, 9)])
-    else:
-        donut.video()
-        donut.deletion()
-    print(f'{str(time.time() - debut)}secondes')
-    print("finit")
+    with Pool(processes=5) as pool:
+        pool.starmap(donut.processing, [(1, 9), (2, 9), (3, 9), (4, 9), (5, 9), (6, 9), (7, 9), (8, 9), (9, 9)])
+    donut.video()
+    # donut.deletion()
+    print(f'ended in {str(time.time() - debut)} secondes')
     sys.exit()
